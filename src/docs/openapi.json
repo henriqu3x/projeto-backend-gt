@@ -1,0 +1,438 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Project Root API",
+    "version": "1.0.0",
+    "description": "API para usuários, categorias e produtos."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "firstname": { "type": "string" },
+          "surname": { "type": "string" },
+          "email": { "type": "string", "format": "email" }
+        }
+      },
+      "UserCreate": {
+        "type": "object",
+        "required": ["firstname", "surname", "email", "password", "confirmPassword"],
+        "properties": {
+          "firstname": { "type": "string" },
+          "surname": { "type": "string" },
+          "email": { "type": "string", "format": "email" },
+          "password": { "type": "string" },
+          "confirmPassword": { "type": "string" }
+        }
+      },
+      "UserUpdate": {
+        "type": "object",
+        "required": ["firstname", "surname", "email"],
+        "properties": {
+          "firstname": { "type": "string" },
+          "surname": { "type": "string" },
+          "email": { "type": "string", "format": "email" }
+        }
+      },
+      "TokenRequest": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": { "type": "string", "format": "email" },
+          "password": { "type": "string" }
+        }
+      },
+      "TokenResponse": {
+        "type": "object",
+        "properties": {
+          "token": { "type": "string" }
+        }
+      },
+      "Category": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "name": { "type": "string" },
+          "slug": { "type": "string" },
+          "use_in_menu": { "type": "boolean" }
+        }
+      },
+      "CategoryCreate": {
+        "type": "object",
+        "required": ["name", "slug"],
+        "properties": {
+          "name": { "type": "string" },
+          "slug": { "type": "string" },
+          "use_in_menu": { "type": "boolean" }
+        }
+      },
+      "CategoryUpdate": {
+        "type": "object",
+        "required": ["name", "slug"],
+        "properties": {
+          "name": { "type": "string" },
+          "slug": { "type": "string" },
+          "use_in_menu": { "type": "boolean" }
+        }
+      },
+      "ProductImageInput": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "type": { "type": "string" },
+          "content": { "type": "string", "description": "Base64 da imagem" },
+          "enabled": { "type": "boolean" },
+          "deleted": { "type": "boolean" }
+        }
+      },
+      "ProductOptionInput": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "title": { "type": "string" },
+          "shape": { "type": "string", "enum": ["square", "circle"] },
+          "radius": { "type": "string", "description": "ex: 4px" },
+          "type": { "type": "string", "enum": ["text", "color"] },
+          "values": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "value": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "deleted": { "type": "boolean" }
+        }
+      },
+      "Product": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "enabled": { "type": "boolean" },
+          "name": { "type": "string" },
+          "slug": { "type": "string" },
+          "stock": { "type": "integer" },
+          "description": { "type": "string" },
+          "price": { "type": "number", "format": "float" },
+          "price_with_discount": { "type": "number", "format": "float" },
+          "category_ids": {
+            "type": "array",
+            "items": { "type": "integer" }
+          },
+          "images": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "integer" },
+                "content": { "type": "string" }
+              }
+            }
+          },
+          "options": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "integer" },
+                "title": { "type": "string" },
+                "shape": { "type": "string" },
+                "radius": { "type": "integer" },
+                "type": { "type": "string" },
+                "values": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "ProductCreate": {
+        "type": "object",
+        "required": ["name", "slug", "price", "price_with_discount"],
+        "properties": {
+          "enabled": { "type": "boolean" },
+          "name": { "type": "string" },
+          "slug": { "type": "string" },
+          "stock": { "type": "integer" },
+          "description": { "type": "string" },
+          "price": { "type": "number", "format": "float" },
+          "price_with_discount": { "type": "number", "format": "float" },
+          "category_ids": {
+            "type": "array",
+            "items": { "type": "integer" }
+          },
+          "images": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ProductImageInput" }
+          },
+          "options": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ProductOptionInput" }
+          }
+        }
+      },
+      "ProductUpdate": {
+        "type": "object",
+        "properties": {
+          "enabled": { "type": "boolean" },
+          "name": { "type": "string" },
+          "slug": { "type": "string" },
+          "stock": { "type": "integer" },
+          "description": { "type": "string" },
+          "price": { "type": "number", "format": "float" },
+          "price_with_discount": { "type": "number", "format": "float" },
+          "category_ids": {
+            "type": "array",
+            "items": { "type": "integer" }
+          },
+          "images": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ProductImageInput" }
+          },
+          "options": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ProductOptionInput" }
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/v1/user/{id}": {
+      "get": {
+        "summary": "Obter usuário por ID",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/User" } } }
+          },
+          "404": { "description": "Not Found" }
+        }
+      },
+      "put": {
+        "summary": "Atualizar usuário",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UserUpdate" } } }
+        },
+        "responses": {
+          "204": { "description": "No Content" },
+          "400": { "description": "Bad Request" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Not Found" }
+        }
+      },
+      "delete": {
+        "summary": "Remover usuário",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "204": { "description": "No Content" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Not Found" }
+        }
+      }
+    },
+    "/v1/user": {
+      "post": {
+        "summary": "Criar usuário",
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UserCreate" } } }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/User" } } }
+          },
+          "400": { "description": "Bad Request" }
+        }
+      }
+    },
+    "/v1/user/token": {
+      "post": {
+        "summary": "Gerar token JWT",
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/TokenRequest" } } }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/TokenResponse" } } }
+          },
+          "400": { "description": "Bad Request" }
+        }
+      }
+    },
+    "/v1/category/search": {
+      "get": {
+        "summary": "Listar categorias",
+        "parameters": [
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 12 } },
+          { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 } },
+          { "name": "fields", "in": "query", "schema": { "type": "string" } },
+          { "name": "use_in_menu", "in": "query", "schema": { "type": "boolean" } }
+        ],
+        "responses": {
+          "200": { "description": "OK" },
+          "400": { "description": "Bad Request" }
+        }
+      }
+    },
+    "/v1/category/{id}": {
+      "get": {
+        "summary": "Obter categoria por ID",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "OK" },
+          "404": { "description": "Not Found" }
+        }
+      },
+      "put": {
+        "summary": "Atualizar categoria",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CategoryUpdate" } } }
+        },
+        "responses": {
+          "204": { "description": "No Content" },
+          "400": { "description": "Bad Request" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Not Found" }
+        }
+      },
+      "delete": {
+        "summary": "Remover categoria",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "204": { "description": "No Content" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Not Found" }
+        }
+      }
+    },
+    "/v1/category": {
+      "post": {
+        "summary": "Criar categoria",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CategoryCreate" } } }
+        },
+        "responses": {
+          "201": { "description": "Created" },
+          "400": { "description": "Bad Request" },
+          "401": { "description": "Unauthorized" }
+        }
+      }
+    },
+    "/v1/product/search": {
+      "get": {
+        "summary": "Listar produtos",
+        "parameters": [
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 12 } },
+          { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 } },
+          { "name": "fields", "in": "query", "schema": { "type": "string" } },
+          { "name": "match", "in": "query", "schema": { "type": "string" } },
+          { "name": "category_ids", "in": "query", "schema": { "type": "string" } },
+          { "name": "price-range", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "OK" },
+          "400": { "description": "Bad Request" }
+        }
+      }
+    },
+    "/v1/product/{id}": {
+      "get": {
+        "summary": "Obter produto por ID",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "OK" },
+          "404": { "description": "Not Found" }
+        }
+      },
+      "put": {
+        "summary": "Atualizar produto",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ProductUpdate" } } }
+        },
+        "responses": {
+          "204": { "description": "No Content" },
+          "400": { "description": "Bad Request" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Not Found" }
+        }
+      },
+      "delete": {
+        "summary": "Remover produto",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "204": { "description": "No Content" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Not Found" }
+        }
+      }
+    },
+    "/v1/product": {
+      "post": {
+        "summary": "Criar produto",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ProductCreate" } } }
+        },
+        "responses": {
+          "201": { "description": "Created" },
+          "400": { "description": "Bad Request" },
+          "401": { "description": "Unauthorized" }
+        }
+      }
+    }
+  }
+}
