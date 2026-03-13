@@ -1,6 +1,6 @@
-# Project Root API
+# projeto-backend-gt
 
-API REST para usuários, categorias e produtos, com autenticação JWT.
+API REST para usuï¿½rios, categorias e produtos, com autenticaï¿½ï¿½o JWT.
 
 ## Setup
 
@@ -8,7 +8,7 @@ API REST para usuários, categorias e produtos, com autenticação JWT.
 - Node.js 18+
 - MySQL 8+
 
-### 1) Instalar dependências
+### 1) Instalar dependï¿½ncias
 ```bash
 npm install
 ```
@@ -19,7 +19,7 @@ Crie o `.env` a partir do `.env.example` e preencha com suas credenciais:
 cp .env.example .env
 ```
 
-Exemplo mínimo:
+Exemplo mï¿½nimo:
 ```
 PORT=3000
 APP_URL=http://localhost:3000
@@ -42,19 +42,19 @@ CREATE DATABASE project_root;
 npm run dev
 ```
 
-Na primeira inicialização o Sequelize cria as tabelas automaticamente.
+Na primeira inicializaï¿½ï¿½o o Sequelize cria as tabelas automaticamente.
 
-## Documentação (Swagger)
+## Documentaï¿½ï¿½o (Swagger)
 - UI: `http://localhost:3000/docs`
 - JSON: `http://localhost:3000/docs.json`
 
-## Autenticação
+## Autenticaï¿½ï¿½o
 Endpoints `POST`, `PUT` e `DELETE` (exceto `/v1/user` e `/v1/user/token`) exigem:
 ```
 Authorization: Bearer <JWT>
 ```
 
 ## Endpoints principais
-- Usuários: `/v1/user`, `/v1/user/{id}`, `/v1/user/token`
+- Usuï¿½rios: `/v1/user`, `/v1/user/{id}`, `/v1/user/token`
 - Categorias: `/v1/category`, `/v1/category/{id}`, `/v1/category/search`
 - Produtos: `/v1/product`, `/v1/product/{id}`, `/v1/product/search`
