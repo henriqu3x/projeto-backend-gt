@@ -1,5 +1,7 @@
 # projeto-backend-gt
 
+Nome: Luiz Henrique de Oliveira Vieira
+
 API REST para usu�rios, categorias e produtos, com autentica��o JWT.
 
 ## Setup
